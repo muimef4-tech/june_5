@@ -11,7 +11,8 @@ users_12week = pd.DataFrame({
     'pair': [1,2,3,4,5,3,6,7,7,4,6,1,2],
     'age': [16,16,16,16,16,13,14,16,16,16,15,15,15],
     'old_or': ['old','old','old','new','old','new','new','old','old','new','old','old','old'],
-    'sex': ['female','male','male','male','male','female','female','male','male','male','male','female','female']
+    'sex': ['female','male','male','male','male','female','female','male','male','male','male','female','female'],
+    'motivation_type':['outer','inner','inner','outer','inner','outer','outer','inner','inner','outer','outer','inner','outer']
     })
 
 
@@ -19,8 +20,8 @@ users_12week = pd.DataFrame({
 goals_12week = pd.DataFrame({
     'user_id': [1,1,1,2,2,2,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11,11,11,12,12,12,13,13,13],
     'goal_id': [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],
-    'category_id': [1,2,3,4,5,3,1,5,6,1,4,1,5,3,2,5,3,1,5,1,5,7,5,7,1,5,1,5,7,3,1,5,3,7,2,3]
-    'goal_hard':   [6,4,5,8,7,7,5,9,8,3,7,6,5,5,4,4,4,6,5,7,8,7,5,7,7,5,4,6,7,7,5,5,6,7,5,5]
+    'category_id': [1,2,3,4,5,3,1,5,6,1,4,1,5,3,2,5,3,1,5,1,5,7,5,7,1,5,1,5,7,3,1,5,3,7,2,3],
+    'goal_hard':   [6,4,5,8,7,7,5,9,8,3,7,6,5,5,4,4,4,6,5,7,8,7,5,7,7,5,4,6,6,7,5,5,6,5,5,5],
     'goal_name': ['french_a2','healhy_habit3','kommunicate','react_project','MMA','job_top','deutch_a2','gym_72kg','looksmaksing_chad','english_a1','data_project',
                   'deutch_b1','gym_68','dance_skill','habit_book','700k_steps','neiro_biology','languages_a2','sport_regular','chinies_b1','looks_sport','job_money',
                   'running','money_60k','english_c1','gym_60','english_a2','sport_habit','jobmoney','study_exam','spanish_a2','mass_5','cooking','job_money_30k','habits',
@@ -39,28 +40,37 @@ goals_priority = pd.DataFrame({
     })
 
 goals_time = pd.DataFrame({
-    'user_id': [1,2,3,4,5,6,7,8,9,10,11,12,13],
+    'user_id':        [1,2,3,4,5,6,7,8,9,10,11,12,13],
     'hours_must_day': [3,6,3,7,6,2,4,6,6,7,3,3,0],
-    'whats_time': ['half2','all_day','night','day','half2','half1','all_day','night','half1','half1','half2','morning','none']
-    'day_must': [7,6,7,6,7,7,7,5,5,7,7,7,7],
-    'regular': ['s','f','s','f','s','f','s','f','f','f','f','s','f']
+    'whats_time':     ['half2','all_day','night','day','half2','half1','all_day','night','half1','half1','half2','morning','all_day'],
+    'day_must':       [7,6,7,6,7,7,7,5,5,7,7,7,7],
+    'regular':        ['s','f','s','f','s','f','s','f','f','f','f','s','f']
     #'blocks_min':
     })
 
 
 
 week_1_pro = pd.DataFrame({
-    'user_id': [1,1,1,2,2,2,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11,11,11,12,12,12,13,13,13],
-    'goal_id': [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],
-    'goals_procent':[86,88,43,100,0,100,85,55,40,22,94,94,60,5,100,97,29,80,80,80,60,0,90,0,10,57,71,70,0,0,80,0,100,0,60,48]
+    'user_id':      [1,1,1,2,2,2,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11,11,11,12,12,12,13,13,13],
+    'goal_id':      [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],
+    'goals_procent':[86,88,43,100,0,100,85,55,40,22,94,94,60,5,100,97,29,80,80,80,60,0,90,0,10,57,71,70,0,0,80,0,100,0,60,48],
+    'problem_id':   [
+    })
     
 week_1_pro = pd.DataFrame({
-    'user_id':[1,2,3,4,5,6,7,8,9,10,11,12,13]
-    'are_you_sure':[8,10,8,8,8,8,8,8,8,6,6,10,8]
-    'hard_week':[
-    'propusk': [1,2,1,2,1,2,0,2,2,1,2,0,0]
-    'hours_week_g': [25,25,6,8,23,14,14,12,6,9,10,11,10]
-    'energy': [
+    'user_id':      [1,2,3,4,5,6,7,8,9,10,11,12,13],
+    'confident':    [8,10,8,8,8,8,8,8,8,6,6,10,8],
+    'hard_week':    [5,4,3,6,2,5,2,8,5,6,6,2,2],
+    'propusk':      [1,2,1,2,1,2,0,2,2,1,2,0,0],
+    'hours_week_g': [25,25,6,8,23,14,14,12,6,9,10,11,10],
+    'energy':       [6,9,9,7,8,7,4,8,7,5,4,8,4],
+    'motivation':   [6,9,7,3,10,7,7,8,5,5,6,5]
+    })
+week1_problem = pd.DataFrame({
+    'problem_id' : [1,2,3,4,5,6,7],
+    'category':    ['planning','energy','focus_another','procrasting','sistem','outer_cause','break_down']
+})
+
 
 
 
@@ -86,6 +96,39 @@ week_1_pro = pd.DataFrame({
 
 
                             #не забудь написать проблему а на ее основе какие характеристики для недели
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           
 
 
 
