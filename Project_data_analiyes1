@@ -3,42 +3,33 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator,FormatStrFormatter
 
+pd.set_option('display.max_rows',None)
+pd.set_option('display.max_columns',None)
+
 #строгие таблтцы на 12 недельный год
 users_12week = pd.DataFrame({
-    'user_id':        [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    'name':           ['Altynai','Ibrahim','Edik','Umar','Ariet','Janaya','Inaya','Aman','Amantur','Abbas','Hafiz','Narselya','Jasmina'],
-    'responsible':    [6,7,7,4,9,6,6,7,7,3,5,5,5],
-    'activ_level':    [4,5,4,3,9,5,6,2,7,2,6,4,5],
-    'pair':           [1,2,3,4,5,3,6,7,7,4,6,1,2],
-    'age':            [16,16,16,16,16,13,14,16,16,16,15,15,15],
-    'old_or':         ['old','old','old','new','old','new','new','old','old','new','old','old','old'],
-    'sex':            ['female','male','male','male','male','female','female','male','male','male','male','female','female'],
-    'motivation_type':['outer','inner','inner','outer','inner','outer','outer','inner','inner','outer','outer','inner','outer'],
-    #'week_must_hours':[],
-    'whats_time':     ['half2','all_day','night','day','half2','half1','all_day','night','half1','half1','half2','morning','all_day'],
-    'day_must':       [7,6,7,6,7,7,7,5,5,7,7,7,7],
-    'regular':        ['s','f','s','f','s','f','s','f','f','f','f','s','f']
-    #'blocks_min':
+    'user_id':        [1,2,3,4,5,6,7,8],
+    'name':           ['Altynai','Ibrahim','Edik','Umar','Ariet','Inaya','Hafiz','Jasmina'],
+    'pair':           [1,2,3,1,2,4,4,2],
+    'old_or':         ['old','old','old','new','old','new','old','old'],
+    'sex':            ['w','m','m','m','m','w','m','w']
     })
 
 
 
 goals_12week = pd.DataFrame({
-    'user_id':     [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11,11,11,12,12,12,13,13,13],
-    'goal_id':     [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],
-    'category_id': [1,2,3,4,5,3,1,6,5,6,1,4,1,5,3,2,5,3,1,5,1,5,6,5,6,1,5,1,5,6,3,1,5,3,3,2,3],
-    'goal_hard':   [6,4,5,8,7,7,5,8,9,7,3,7,6,5,5,4,4,4,6,5,7,8,7,5,7,7,5,4,6,6,7,5,5,6,5,5,5],
+    'user_id':     [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8],
+    'goal_id':     [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
+    'category_id': [1,2,3,4,5,3,1,4,5,6,1,4,1,5,3,1,5,2,6,3,3,2,3],
+    #'goal_hard':   [6,4,5,8,7,7,5,8,9,7,3,7,6,5,5,4,4,4,6,5,7,8,7,5,7,7,5,4,6,6,7,5,5,6,5,5,5],
     'goal_name':   ['french_a2','healhy_habit3','kommunicate','react_project','sport_etwa','job_top','deutch_a2','web_company','gym_72kg','money_60k','english_a1',
-                  'data_project','deutch_b1','gym_68','dance_skill','habit_book','700k_steps','neiro_biology','languages_a2','sport_regular','chinies_b1','looks_sport',
-                  'job_money','running','money_60k','english_c1','gym_60','english_a2','sport_habit','jobmoney','study_exam','spanish_a2','mass_5','cooking','logic',
+                  'data_project','deutch_b1','gym_68','neiro_biology','languages_a2','sport_regular',
+                  'sport_habit','jobmoney','study_exam','logic',
                   'habits','psygology'],
-    'priority':    [1,2,3,1,2,3,1,2,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,1,2,3,1,2,3,1,2,3]
+    'priority':    [1,2,3,1,2,3,1,2,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3]
     })
 
-goals_type = pd.DataFrame({
-    'category':['language','habit','skils','project','sport','finance'],
-    'category_id': [1,2,3,4,5,6]
-    })
+
 
 problems_week = pd.DataFrame({
     'problem_id' : [1,2,3,4,5,6,7],
@@ -46,68 +37,430 @@ problems_week = pd.DataFrame({
     })
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 #неделя первая данные
+users_1week = pd.DataFrame({
+    'user_id':      [1,2,3,4,5,6,7,8],
+    'hours_week_g': [25,25,6,8,23,14,10,10],
+    'missed_days':  [1,2,1,2,1,0,2,0],
+    'energy':       [6,9,9,7,8,4,4,4],
+    'confidence':    [8,10,8,8,8,8,6,8],
+    'motivation':   [6,9,7,3,10,7,6,4],
+    'hard_week':    [5,4,3,6,2,2,6,2]
+    })
+
 goals_1week = pd.DataFrame({
-    'user_id':      [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11,11,11,12,12,12,13,13,13],
-    'goal_id':      [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],
-    'goals_procent':[86,88,43,100,0,100,85,93,55,0,22,94,94,60,5,100,97,29,80,80,80,60,0,90,0,10,57,71,70,0,0,80,0,100,0,60,48],
-    'problem_id':   [2,6,5,3,7,6,3,3,4,6,4,3,2,5,2,3,6,6,4,5,6,5,2,1,6,7,6,3,3,6,4,3,6,7,6,1,6],
-    'weeky':        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    'user_id':     [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8],
+    'goal_id':     [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
+    'goals_procent':[86,88,43,
+                     100,0,100,
+                     85,93,
+                     55,0,22,
+                     94,94,60,
+                     29,80,80,
+                     70,0,0,
+                     0,60,48],
+    
+    'problem_id':   [2,6,5,3,7,6,3,3,4,6,4,3,2,5,6,4,5,6,4,3,6,1,6],
+    'weeky':        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     })
     
-users_1week = pd.DataFrame({
-    'user_id':      [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    'hours_week_g': [25,25,6,8,23,14,14,12,6,9,10,11,10],
-    'propusk':      [1,2,1,2,1,2,0,2,2,1,2,0,0],
-    'energy':       [6,9,9,7,8,7,4,8,7,5,4,8,4],
-    'confident':    [8,10,8,8,8,8,8,8,8,6,6,10,8],
-    'motivation':   [6,9,7,3,10,7,7,8,5,5,6,5,4],
-    'hard_week':    [5,4,3,6,2,5,2,8,5,6,6,2,2]
-    })
+
 
 
 week_1 = goals_1week.merge(users_1week, on = 'user_id')
 
 
-#неделя вторая
-goals_2week = pd.DataFrame({
-    'user_id':      [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11,11,11,12,12,12,13,13,13] ,
-    'goal_id':      [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37], 
-    'goals_procent':[100,77,45,100,0,100,85,82,78,0,80,75,75,57,67,4,85,62,21,87,80,65,25,90,40,60,86,74,52,0,45,80,30,100,0,90,70],
-    'problem_id':   [2,6,5,6,6,6,1,4,4,6,4,1,3,5,2,4,6,4,3,6,6,4,2,2,6,7,2,3,6,6,4,3,3,3,6,1,2],
-    'weeky':        [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
-    })
-
+#неделя вторая данные 
 users_2week = pd.DataFrame({
-    'user_id':      [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    'hours_week_g': [22,23,5,32,32,12,17,18,7,10,13,4,20],
-    'propusk':      [2,0,2,2,2,2,2,2,1,1,1,2,1],
-    'energy':       [5,10,4,8,6,5,5,5,7,2,5,8,7],
-    'confident':    [7,0,6,9,4,6,9,6,7,3,4,9,8],
-    'motivation':   [5,8,5,7,5,4,4,7,8,4,7,8,10],
-    'hard_week':    [5,7,5,7,7,6,3,6,6,6,3,3,3]
-    })
+    'user_id': [1,2,3,4,5,6,7,8],
+    'hours_week_g': [22,23,5,32,32,17,13,20],
+    'missed_days': [2,0,2,2,2,2,1,1],
+    'energy': [5,10,4,8,6,5,5,7],
+    'confidence': [7,8,6,9,4,9,4,8],
+    'motivation': [5,8,5,7,5,4,7,10],
+    'hard_week': [5,7,5,7,7,3,3,3]
+})
 
+
+goals_2week = pd.DataFrame({
+    
+    'user_id':     [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8],
+    'goal_id':     [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
+    'goals_procent': [
+        100,77,45,
+        100,0,100,
+        85,82,
+        78,0,80,
+        75,75,57,
+        62,21,87,
+        52,0,45,
+        30,100,0
+    ],
+    'problem_id': [
+        2,6,5,
+        6,6,6,
+        1,4,
+        4,6,4,
+        1,3,5,
+        4,3,6,
+        6,6,4,
+        3,3,6
+    ],
+    'weeky': [
+        2,2,2,
+        2,2,2,
+        2,2,
+        2,2,2,
+        2,2,2,
+        2,2,2,
+        2,2,2,
+        2,2,2
+    ]
+})
 week_2 = goals_2week.merge(users_2week, on = 'user_id')
 
-week = pd.concat([week_1,week_2])
-we = week_2.merge(users_12week, on = 'user_id')
+
+#неделя 3 данные
+users_3week = pd.DataFrame({
+    'user_id': [1,2,3,4,5,6,7,8],
+    'hours_week_g': [17,24,28,28,32,28,24,24],
+    'missed_days': [0,1,0,1,1,0,0,0],
+    'energy': [6,10,8,8,8,10,7,8],
+    'confidence': [6,8,8,7,8,7,8,8],
+    'motivation': [5,8,8,9,8,7,9,10],
+    'hard_week': [5,6,5,6,6,9,5,4]
+})
 
 
-print(we.groupby('pair')['goals_procent'].mean().sort_values(ascending = False))
-pd.set_option('display.max_rows',None)
-pd.set_option('display.max_columns',None)
-plt.figure(figsize = (10,10))
-y = week_1.groupby('user_id')['goals_procent'].mean()
-y1 = week_2.groupby('user_id')['goals_procent'].mean()
-x = users_12week['name']
-plt.plot(x,y)
-plt.plot(x,y1)
-plt.xticks(rotation = 90)
-plt.grid()
-plt.show()
-print(goals_2week.columns)
+goals_3week = pd.DataFrame({
+    
+    'user_id':     [1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8],
+    'goal_id':     [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],    
+    'goals_procent': [
+        85.5,92.8,66,
+        100,100,100,
+        100,100,
+        82,65,26,
+        80,93,93,
+        80,10,100,
+        78,43,42,
+        100,90,100
+    ],
+    'problem_id': [
+        4,6,6,
+        1,2,3,
+        1,2,
+        3,1,3,
+        1,2,6,
+        6,6,7,
+        6,4,3,
+        1,3,1
+    ],
+    'weeky': [
+        3,3,3,
+        3,3,3,
+        3,3,
+        3,3,3,
+        3,3,3,
+        3,3,3,
+        3,3,3,
+        3,3,3
+    ]
+})
 
+week_3 = goals_3week.merge(users_3week,on = 'user_id')
+
+
+#неделя 4
+goals_4week = pd.DataFrame({
+    'user_id': [
+        1,1,1,
+        2,2,2,
+        3,3,
+        4,4,4,
+        5,5,5,
+        6,6,6,
+        7,7,7,
+        8,8,8
+    ],
+
+    'goal_id': [
+        1,2,3,
+        4,5,6,
+        7,8,
+        9,10,11,
+        12,13,14,
+        15,16,17,
+        18,19,20,
+        21,22,23
+    ],
+
+    'goals_procent': [
+        95,85,75,
+        90,35,80,
+        100,80,
+        90,50,10,
+        40,70,70,
+        82,15,70,
+        78,0,60,
+        95,100,85
+    ],
+
+    'problem_id': [
+        3,4,3,
+        1,2,2,
+        6,6,
+        1,0,2,
+        7,4,6,
+        3,4,7,
+        6,2,6,
+        1,1,1
+    ],
+
+    'weeky': [
+        4,4,4,
+        4,4,4,
+        4,4,
+        4,4,4,
+        4,4,4,
+        4,4,4,
+        4,4,4,
+        4,4,4
+    ]
+})
+
+users_4week = pd.DataFrame({
+    'user_id': [1,2,3,4,5,6,7,8],
+    'hours_week_g': [18,18,20,33,20,12,15,22],
+    'missed_days': [0,0,1,1,3,0,0,2],
+    'energy': [6,6,5,8.5,5,4,3,7],
+    'confidence': [7,7,8,7.5,5,7,4,7],
+    'motivation': [5,9,5,8,5,9,5,5],
+    'hard_week': [5,7,5,8,7,1,6,8]
+})
+week_4 = goals_4week.merge(users_4week, on = 'user_id')
+#неделя 5
+goals_5week = pd.DataFrame({
+    'user_id': [
+        1,1,1,
+        2,2,2,
+        3,3,
+        4,4,4,
+        5,5,5,
+        6,6,6,
+        7,7,7,
+        8,8,8
+    ],
+
+    'goal_id': [
+        1,2,3,
+        4,5,6,
+        7,8,
+        9,10,11,
+        12,13,14,
+        15,16,17,
+        18,19,20,
+        21,22,23
+    ],
+
+    'goals_procent': [
+        70,83,71,
+        100,65,95,
+        57.1,57.1,
+        75,30,0,
+        71.5,70.5,68.5,
+        10,100,75,
+        50,0,49,
+        70,65,67
+    ],
+
+    'problem_id': [
+        4,6,2,
+        3,7,6,
+        6,6,
+        2,2,3,
+        1,5,6,
+        2,2,2,
+        6,1,2,
+        2,6,6
+    ],
+
+    'weeky': [
+        5,5,5,
+        5,5,5,
+        5,5,
+        5,5,5,
+        5,5,5,
+        5,5,5,
+        5,5,5,
+        5,5,5
+    ]
+})
+users_5week = pd.DataFrame({
+    'user_id': [1,2,3,4,5,6,7,8],
+    'hours_week_g': [15,24,8,15,35,12,15,19],
+    'missed_days': [2,2,3,3,2,0,2,0],
+    'energy': [5,6,4,6.5,6,5,4,5],
+    'confidence': [7,8,5,7,7,8,4,7],
+    'motivation': [5,8,5,7,10,10,5,5],
+    'hard_week': [6,6,6,6,9,8,3,8]
+})
+week_5 = goals_5week.merge(users_5week, on = 'user_id')
+#неделя 6
+goals_6week = pd.DataFrame({
+    'user_id': [
+        1,1,1,
+        2,2,2,
+        3,3,
+        4,4,4,
+        5,5,5,
+        6,6,6,
+        7,7,7,
+        8,8,8
+    ],
+
+    'goal_id': [
+        1,2,3,
+        4,5,6,
+        7,8,
+        9,10,11,
+        12,13,14,
+        15,16,17,
+        18,19,20,
+        21,22,23
+    ],
+
+    'goals_procent': [
+        25,76,70,
+        100,70,90,
+        57,42,
+        20,10,0,
+        82,70,81,
+        87,95,82,
+        49,38,47,
+        68,88,53
+    ],
+
+    'problem_id': [
+        4,6,2,
+        3,7,6,
+        6,6,
+        5,3,5,
+        7,4,6,
+        3,4,7,
+        7,3,2,
+        2,6,6
+    ],
+
+    'weeky': [
+        6,6,6,
+        6,6,6,
+        6,6,
+        6,6,6,
+        6,6,6,
+        6,6,6,
+        6,6,6,
+        6,6,6
+    ]
+})
+users_6week = pd.DataFrame({
+    'user_id': [1,2,3,4,5,6,7,8],
+    'hours_week_g': [15,23.5,6,10,40,18,15,17],
+    'missed_days': [1,2,4,4,2,1,2,2],
+    'energy': [4,7,5,8,7,7,3,3],
+    'confidence': [6,9,5,3,7,8,4,7],
+    'motivation': [4,7,2,5,8,9,4,5],
+    'hard_week': [6,6,6,5,10,4,2,8]
+})
+week_6 = goals_6week.merge(users_6week, on = 'user_id')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+week = pd.concat([week_1,week_2,week_3,week_4,week_5,week_6])
+
+print(week.groupby('user_id').agg(
+    goals_mean = ('goals_procent','mean'),
+    hours_mean = ('hours_week_g','mean'),
+    missed_sum = ('missed_days','sum')))
+
+print(week.groupby(['weeky','user_id'])['missed_days'].sum())
+users_week = pd.concat([users_1week,users_2week,users_3week,users_4week,users_5week,users_6week])
+goals_week = pd.concat([goals_1week,goals_2week,goals_3week,goals_4week,goals_5week,goals_6week])
+print(users_week.groupby('user_id')['missed_days'].sum())
+print(goals_week.groupby('user_id')['goals_procent'].mean())
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
 
