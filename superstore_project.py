@@ -1,10 +1,39 @@
 #Бизнес-вопросы:
-print('''1.Какие категории дают максимальную выручку?
-2.Какие регионы самые прибыльные?
-3.Какие товары имеют высокий спрос, но низкую прибыль?
-4.Как меняются продажи во времени?
-5.Кто основные клиенты?''')
+print('''
+1. Какие категории приносят максимальную выручку?
 
+2. Какие подкатегории являются лидерами по продажам?
+
+3. Какие товары имеют самый высокий спрос?
+
+4. Какие регионы приносят больше всего выручки?
+
+5. Какие штаты и города являются ключевыми рынками?
+
+6. Как меняется объем продаж со временем?
+   Есть ли сезонность или периоды роста/падения?
+
+7. Какие месяцы являются самыми прибыльными по продажам?
+
+8. Кто основные клиенты компании?
+   (по количеству заказов и сумме покупок)
+
+9. Какие клиенты являются VIP?
+   (RFM-анализ)
+
+10. Есть ли проблемы с удержанием клиентов?
+    (когортный анализ)
+
+11. Какие клиентские сегменты приносят больше всего выручки?
+
+12. Какие категории популярны у разных клиентских сегментов?
+
+13. Какие регионы предпочитают разные категории товаров?
+
+14. Какой способ доставки используется чаще всего?
+
+15. Есть ли зависимость между частотой покупок клиента и общей суммой покупок?
+''')
 
 
 #крч библеотеки импортируем
@@ -64,7 +93,7 @@ df['sub_category'] = df['sub_category'].astype('category')
 
 df['order_date'] = pd.to_datetime(df['order_date'],dayfirst = True)
 df['ship_date'] = pd.to_datetime(df['ship_date'],dayfirst = True)
-
+print(df['category'].value_counts(normalize = True))
 
 
 
@@ -97,40 +126,31 @@ df['week'] = df['order_date'].dt.isocalendar().week
 df['quarter'] = df['order_date'].dt.quarter
 df['month_name'] = df['order_date'].dt.strftime('%B')
 df['weekday_name'] = df['order_date'].dt.strftime('%A')
+df['is_weekend'] = df['weekday'].isin([5,6])
+df['shipping_days'] = df['ship_date'] - df['order_date']
+
 #дни спустя
 df['days_since_first'] = (df['order_date'] - df['order_date'].min()).dt.days
 df['days_for_last'] = ( df['order_date'].max() - df['order_date']).dt.days
 #периоды
-df['month_date'] = df['order_date'].dt.to_period('M')
 
-#3.2 cоздание сегментов
+
+
+#3.2 создание метрик
+customer_stats = df.groupby('customer_id').agg(
+    frequency = ('order_id','count'),
+    monetary = ('sales','sum'),
+    recency = ('order_date','max'))
+customer_stats['recency_days'] = (df['order_date'].max() - customer_stats['recency']).dt.days
+
+#3.3 cоздание сегментов
 df['sales_segment'] = pd.qcut(df['sales'],q = 4, labels = ['low','mid','high','premium'])
-print(df['sales_segment'])
-#сколько всего заказали по городу
-city_total_orders = df.groupby('city')['order_id'].transform('nunique')
-#какой город чаще заказывает
-city_count_orders = df.groupby('city')['order_id'].transform('count')
-#активность юзеров
-city_activ_users = df.groupby('city')['customer_id'].transform('count')
-#частота юзеров в городах
-city_activ_users = df.groupby('city')['customer_id'].transform('nunique')
+customer_stats['monetary_segment'] = pd.qcut(customer_stats['monetary'],q = 4, labels = ['low','mid','high','premium'])
+customer_stats['frequency_segment'] = pd.qcut(customer_stats['frequency'],q = 4, labels = ['low','mid','high','premium'])
+customer_stats['recency_segment'] = pd.qcut(customer_stats['recency_days'],q = 4, labels = ['premium','high','mid','low'])
 
-city_count_orders_segment= pd.cut(city_count_orders
-city_count_customers = pd.cut(city_count_users
-
-
-#3.3 создание метрик
-
-
-
-
-
-
-
-
-
-
-
+customer_stats = customer_stats.reset_index()
+df = df.merge(customer_stats, on = 'customer_id', how = 'left')
 
 
 #4 EDA
@@ -141,15 +161,34 @@ print("\n" + "="*50)
 print('AНАЛИЗИРОВАНИЕ ПРИЗНАКОВ ОДНОМЕРНЫХ')
 print("="*50)
 
-#АНАЛИЗ ЧИСЛОВЫХ ПРИЗНАКОВ 
-print(df['sales'].mean())
-print(df['sales'].median())
-print(df.sort_values('sales',ascending = False))
+#АНАЛИЗ ЧИСЛОВЫХ ПРИЗНАКОВ И НОВЫХ ПРИЗНАКОВ
+print(df['sales'].describe())
+fig, axes = plt.subplots(2,2,figsize = (14,16))
+sns.boxplot(data = df[['sales','recency_days','monetary','frequency']],ax = axes[0,0])
+axes[0,0].set_title('выбросы ящик с усами ')
 
+
+sns.histplot(data = df, x ='recency_days',ax = axes[0,1],
+                        kde = True)
+axes[0,1].set_title('распределение дней с последним заказом')
+axes[0,1].set_ylabel('количество клиентов')
+axes[0,1].set_xlabel('дней спустя')
+
+sns.histplot(data = df, x ='monetary',ax = axes[1,0],
+                    kde = True)
+axes[1,0].set_title('сколько денег приносит клиент')
+axes[1,0].set_ylabel('сумма покупок')
+axes[1,0].set_xlabel('количество клиентов')
+
+sns.histplot(data = df,x = 'frequency',ax = axes[1,1],
+                     kde = True)
+axes[1,1].set_title('частота покупок ')
+axes[1,1].set_ylabel('покупатели количество')
+axes[1,1].set_xlabel('количесвто заказов')
+plt.tight_layout()
+plt.plot()
 
 #ОБЩЕЕ РАСПРЕДЕЛЕНИЕ КАТЕГОРИАЛЬНЫХ ПРИЗНАКОВ ПО ПРОЦЕНТАМ
-
-
 
 #анализ категорий
 print('\nРаспределение категорий:',df['category'].value_counts())
@@ -183,7 +222,76 @@ print('\nКоличественное распределение сегмент�
 print('\nРаспределение доставки:',df['ship_mode'].value_counts())
 procent_of_ship_mode_count = df['ship_mode'].value_counts() / len(df) * 100
 print('\nКоличественное распределение доставки по процентам:',procent_of_ship_mode_count)
+#3
+print('\nРаспределение cегментов по цене :',df['sales_segment'].value_counts())
+procent_of_sales_segment_count = df['sales_segment'].value_counts() / len(df) * 100
+print('\nКоличественное распределение сегментов цены по процентам:',procent_of_sales_segment_count)
 
+
+#визуализация признаков
+fig, axes = plt.subplots(3,3,figsize = (20,30))
+
+#города и регионы
+sns.countplot(data = df, y =  'city',
+              order = df['city'].value_counts().head(10).index, ax = axes[0,0])
+axes[0,0].set_title('топ 10 городов по количеству ')
+axes[0,0].set_ylabel('города')
+axes[0,0].set_xlabel('количество заказов')
+
+#штатов 
+sns.countplot(data = df, y =  'state',
+              order = df['state'].value_counts().head(10).index, ax = axes[0,1])
+axes[0,1].set_title('топ 10 штатов по количеству ')
+axes[0,1].set_ylabel('штаты')
+axes[0,1].set_xlabel('количество заказов')
+
+#регионов
+sns.countplot(data = df, y =  'region',
+              order = df['region'].value_counts().index, ax = axes[0,2])
+axes[0,2].set_title('распределение регионов')
+axes[0,2].set_ylabel('регионы')
+axes[0,2].set_xlabel('количество заказов')
+
+#различные категории
+
+#сегментов
+df['segment'].value_counts().plot(kind = 'pie', autopct ='%1.1f%%',ax = axes[1,0])
+axes[1,0].set_title('распределение сегментов')
+
+#категорий
+df['category'].value_counts().plot(kind = 'pie', autopct ='%1.1f%%',ax = axes[1,1])
+axes[1,1].set_title('распределение категорий')
+
+#под_категорий
+sns.countplot(data = df, y =  'sub_category',
+              order = df['sub_category'].value_counts().index, ax = axes[1,2])
+axes[1,2].set_title('распределение под категорий ')
+axes[1,2].set_ylabel('под_категории')
+axes[1,2].set_xlabel('количество заказов')
+
+#ship_mode
+sns.countplot(data = df, y =  'ship_mode',
+              order = df['ship_mode'].value_counts().index, ax = axes[2,0])
+axes[2,0].set_title('распределение типов заказа')
+axes[2,0].set_ylabel('типы заказов')
+axes[2,0].set_xlabel('количество заказов')
+
+#распределение клиентов
+sns.countplot(data = df, y =  'customer_name',
+              order = df['customer_name'].value_counts().head(10).index, ax = axes[2,1])
+axes[2,1].set_title('топ 10 клиентов по заказам')
+axes[2,1].set_ylabel('клиенты имя')
+axes[2,1].set_xlabel('количество заказов')
+
+#распределение сегментов по ценам
+sns.countplot(data = df, y =  'sales_segment',
+              order = df['sales_segment'].value_counts().head(10).index, ax = axes[2,2])
+axes[2,2].set_title('денежные сегменты')
+axes[2,2].set_ylabel('название сегментов')
+axes[2,2].set_xlabel('цены')
+
+plt.tight_layout()
+plt.show()
 
 
 
@@ -196,33 +304,104 @@ print("\n" + "="*50)
 print('AНАЛИЗИРОВАНИЕ ПРИЗНАКОВ ДВУМЕРНЫХ')
 print("="*50)
 
-#признаки категория + категория 
-sales_category = df.groupby('category')['sales'].sum()
-sales_subcategory = df.groupby('subcategory')['sales'].sum()
-print('\nЦены по категориям:', sales_subcategory,
-      '\nЦены по подкатегориям:', sales_category
-      )
 
+
+fig, axes = plt.subplots(3,3,figsize = (12,16))
+#признаки категория + продажа
+sales_category = df.groupby('category')['sales'].sum()
+sales_subcategory = df.groupby('sub_category')['sales'].sum()
 sales_region = df.groupby('region')['sales'].sum()
 sales_state =df.groupby('state')['sales'].sum()
 sales_city =df.groupby('city')['sales'].sum()
+sales_segment = df.groupby('sales_segment')['sales'].sum()
+#категория + категоия
+crosstab_segment_ship_mode = pd.crosstab(df['sales_segment'],df['ship_mode'])
+crosstab_region_category = pd.crosstab(df['region'],df['category'])
+crosstab_category_segment = pd.crosstab(df['category'],df['sales_segment'])
 
-print('\nЦены по месту:', sales_territory,
+
+print('\nЦены по категориям:', sales_subcategory,
+      '\nЦены по подкатегориям:', sales_category
+      )
+print('\nЦены по месту:', sales_city,
      '\nЦены по месту:',sales_region,
-     '\nЦены по месту:', sales_state)
-
-sales_category = df.groupby('segment')['sales'].sum()
-print('\nЦены по сегментации:' ,sales_category)
-
-#анализ клиентов + признаки
+     '\nЦены по месту:', sales_state
+      )
+print('\nЦены по сегментации:' ,sales_segment)
 
 
+print('\nКросс таблица по сегменту и типу доставки:',crosstab_segment_ship_mode)
+print('\nКросс таблица по категории и региону:',crosstab_region_category)
+print('\nКросс таблица по сегменту и категории:',crosstab_category_segment)
+      
+
+
+#визуализация
+sales_category.plot(kind = 'bar',
+                    ax =axes[0,0])
+sales_subcategory.plot(kind = 'bar',
+                       ax =axes[0,1])
+sales_region.plot(kind = 'bar',
+                  ax =axes[0,2])
+sales_state.plot(kind = 'bar' ,
+                 ax =axes[1,0])
+sales_city.plot(kind = 'bar',
+                ax =axes[1,1])
+sales_category.plot(kind = 'bar' ,
+                    ax =axes[1,2])
+crosstab_segment_ship_mode.plot(kind = 'bar',
+                                ax = axes[2,0])
+crosstab_region_category.plot(kind = 'bar',
+                                ax = axes[2,1])
+crosstab_category_segment.plot(kind = 'bar',
+                                ax = axes[2,2])
+
+
+plt.title('анализ старых признаков')
+plt.show()
+
+#признаки через pivot_table
+pivot_category_date = df.pivot_table(
+    index = 'month',
+    columns = 'category',
+    values = 'sales',
+    aggfunc = 'sum')
+
+pivot_region_date = df.pivot_table(
+    index = 'month',
+    columns = 'region',
+    values = 'sales',
+    aggfunc = 'sum')
+
+pivot_segment_date = df.pivot_table(
+    index = 'month',
+    columns = 'segment',
+    values = 'sales',
+    aggfunc = 'sum')
+
+
+
+# корреляционная матрица и визуализация
+numeric_columns = df[['sales','recency_days','frequency','monetary']]
+fig, axes = plt.subplots(2,2,figsize = (10,12))
+
+sns.heatmap(pivot_category_date,annot = True ,fmt = '.0f',ax = axes[0,0])
+sns.heatmap(pivot_region_date,annot = True ,fmt = '.0f',ax = axes[0,1])
+sns.heatmap(pivot_segment_date,annot = True ,fmt = '.0f',ax = axes[1,0])
+sns.heatmap(numeric_columns.corr(), annot = True,fmt = '0.1f',ax = axes[1,1])
+plt.show()
 
 
 
 
 
-#анализ заказов + признаки
+
+
+
+#временной анализ
+
+
+
 
 
 
@@ -235,54 +414,91 @@ print('AНАЛИЗИРОВАНИЕ ПРИЗНАКОВ МНОГОМЕРНЫХ')
 print("="*50)
 
 #процентное соотношение
+
+
 procent_of_category_sales = df.groupby('category')['sales'].sum() / df['sales'].sum() * 100
 procent_of_subcategory_sales = df.groupby('sub_category')['sales'].sum() / df['sales'].sum() * 100
-procent_of_category_sales.plot(kind = bar)
-plt.show()
 
 
-#sum() aggfunction
+
+#sum() aggfunction sales
 total_sales_category_by_regions = df.groupby(['category','region','state','city'])['sales'].sum()
 total_sales_category_by_segments =  df.groupby(['category','segment'])['sales'].sum()
 total_sales_regions_by_segments = df.groupby(['segment','region','state','city'])['sales'].sum()
                                          
-total_sales_subcategory_by_regions = df.groupby(['sub_category''region','state','city'])['sales'].sum()
+total_sales_subcategory_by_regions = df.groupby(['sub_category','region','state','city'])['sales'].sum()
 total_sales_subcategory_by_segments = df.groupby(['sub_category','segment'])['sales'].sum()
 total_sales_by_all_category = df.groupby(['category','segment'])['sales'].sum()
 
 
-#mean() aggfunction
+#mean() aggfunction sales
                                    
 sales_category_by_regions = df.groupby(['category','region','state','city'])['sales'].mean()
 sales_category_by_segments =  df.groupby(['category','segment'])['sales'].mean()
 sales_regions_by_segments = df.groupby(['segment','region','state','city'])['sales'].mean()
                                          
-sales_subcategory_by_regions = df.groupby(['subcategory''region','state','city'])['sales'].mean()
+sales_subcategory_by_regions = df.groupby(['sub_category','region','state','city'])['sales'].mean()
 sales_subcategory_by_segments = df.groupby(['category','segment'])['sales'].mean()
 sales_by_all_category = df.groupby(['category','segment'])['sales'].mean()
 
+#новых признаков
+rfm_category = df.groupby('category')[['recency_days','frequency','monetary']].mean()
+rfm_region = df.groupby('region')[['recency_days','frequency','monetary']].mean()
+rfm_sub_category = df.groupby('sub_category')[['recency_days','frequency','monetary']].mean()
+rfm_sales_segment = df.groupby('sales_segment')[['recency_days','frequency','monetary']].mean()
+rfm_ship_mode = df.groupby('ship_mode')[['recency_days','frequency','monetary']].mean()
+
+
 
 #4.4 когортный анализ
+df['cohort_date'] = df.groupby('customer_id')['order_date'].transform('min')
+#месяцы
+df['month_order'] = df['order_date'].dt.to_period('M')
+df['month_cohort'] = df['cohort_date'].dt.to_period('M')
+df['period'] = (df['month_order'] - df['month_cohort']).apply(lambda x: x.n)
+#уникал пользователи
+cohort = (df.groupby(['month_cohort','period'])['customer_id'].nunique().reset_index())
+#таблица когорт
+retention = cohort.pivot(
+    index = 'month_cohort',
+    columns ='period',
+    values = 'customer_id')
+retention_rate = retention.div(retention[0], axis = 0) * 100
+print(retention_rate)
+
+sns.heatmap(retention_rate,annot = True,fmt = '0.1f',cmap = 'Blues')
+plt.title('сohort_retention')
+plt.xlabel('месяц после первой покупки')
+plt.ylabel('кошортная группа')
+plt.show()
 
 
 
 
 
-#4.5 визуализация анализов
-#АНАЛИЗ C ПОМОЩЬЮ ВИЗУАЛИЗАЦИИ
-fig, axes = plt.subplots(3,3,figsize = (12,16))
-sns.histplot(data = df, x = 'sales',bins = 50,ax = axes[0,0])
-axes[0,0].set_title('распределение цен')
 
-sns.barplot(data = df, x = 'region',y = 'sales',  ax = axes[0,1])
-axes[0,1].set_title('распределение регионов')
 
-sns.ecdfplot(data = df, x = 'sales', hue = 'region', ax = axes[1,0])
 
-sns.barplot(data = df, x = 'category', y = 'sales', ax =axes[1,1])
-sns.lineplot(data = df,x = 'year',y = 'sales', ax = axes[0,2])
-plt.tight_layout()
-plt.plot()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
